@@ -1,0 +1,12 @@
+.banner {
+    background-image: 
+        linear-gradient(
+            rgba(0, 0, 0, 0.5), /* Warna hitam dengan transparansi 50% */
+            rgba(0, 0, 0, 0.5) /* Warna hitam dengan transparansi 50% */
+        ),
+        url("https://images.pexels.com/photos/1430677/pexels-photo-1430677.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1");
+    background-size: cover;
+    background-position: center;
+    height: 100vh; /* Atur tinggi sesuai kebutuhan */
+    color: white; /* Warna teks jika diperlukan */
+}
