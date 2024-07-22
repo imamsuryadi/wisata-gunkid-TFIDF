@@ -1,12 +1,89 @@
-.banner {
-    background-image: 
-        linear-gradient(
-            rgba(0, 0, 0, 0.5), /* Warna hitam dengan transparansi 50% */
-            rgba(0, 0, 0, 0.5) /* Warna hitam dengan transparansi 50% */
-        ),
-        url("https://images.pexels.com/photos/1430677/pexels-photo-1430677.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1");
-    background-size: cover;
-    background-position: center;
-    height: 100vh; /* Atur tinggi sesuai kebutuhan */
-    color: white; /* Warna teks jika diperlukan */
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css");
+
+body {
+    font-family: "Poppins", sans-serif;
+}
+
+.swiper {
+    width: 100%;
+    height: 100%;
+    border-radius: 16px;
+}
+
+.swiper-slide {
+    text-align: center;
+    font-size: 18px;
+    background: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 16px;
+}
+
+.swiper-slide img {
+    display: block;
+    width: 100%;
+    object-fit: cover;
+    border-radius: 16px;
+}
+
+.swiper-button-next,
+.swiper-button-prev {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute; /* Ensure buttons are positioned */
+}
+
+.swiper-button-prev::after,
+.swiper-button-next::after {
+    display: none;
+}
+
+.swiper-button-prev img,
+.swiper-button-next img {
+    width: 50px;
+    height: auto;
+    opacity: 0; /* Initially hide icon */
+    transition: opacity 0.3s ease; /* Smooth transition */
+}
+
+.swiper:hover .swiper-button-prev img,
+.swiper:hover .swiper-button-next img {
+    opacity: 1; /* Show icon on hover */
+}
+
+.swiper-button-prev img {
+    transform: rotate(180deg);
+}
+
+.swiper-button-prev img:hover,
+.swiper-button-next img:hover {
+    opacity: 0.5; /* Lower opacity on hover */
+}
+
+input:focus {
+    outline: none !important;
+}
+
+*:focus {
+    box-shadow: none !important;
+}
+
+.swiper-slide .swiper-card {
+    text-align: center;
+    font-size: 18px;
+    background: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.swiper-slide .swiper-card img {
+    display: block;
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
 }
