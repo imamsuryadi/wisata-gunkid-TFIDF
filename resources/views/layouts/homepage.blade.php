@@ -13,20 +13,76 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 
 </head>
+<style>
+    .search-history {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background-color: white;
+        border: 1px solid #ccc;
+        border-radius: 0 0 10px 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        z-index: 1001;
+    }
+
+    .search-history-item {
+        padding: 10px;
+        cursor: pointer;
+    }
+
+    .search-history-item:hover {
+        background-color: #f0f0f0;
+    }
+
+    .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+        display: none;
+    }
+
+    .search-container {
+        position: relative;
+        z-index: 1001;
+    }
+</style>
 
 <body>
+    <div class="overlay" id="overlay"></div>
     <nav class="navbar navbar-expand-lg ">
         <div class="container">
             <img src="https://api.bbksdajatim.org/tiket-api/upload/lokasi/2024-03-29/file/MIB9eY128h.png" width="70"
                 alt="">
             <a class="navbar-brand fw-bold" href="#">Gunkidsss Bos.</a>
-            <form class="d-flex position-relative" role="search">
-                <input class="form-control me-2 ps-5" type="search" placeholder="Cari Wisata" aria-label="search"
-                    style="border-radius: 24px;">
-                <i class="bi bi-search position-absolute"
-                    style="top: 50%; left: 10px; transform: translateY(-50%);"></i>
-            </form>
+            <div class="col-md-4">
+                <form class="d-flex search-container" role="search" onsubmit="return false;">
+                    <input id="search-input" class="form-control me-2 ps-5" type="search" placeholder="Cari Wisata"
+                        aria-label="search" style="border-radius: 24px;" onfocus="showHistory()" onblur="hideHistory()">
+                    <i class="bi bi-search position-absolute"
+                        style="top: 50%; left: 10px; transform: translateY(-50%);"></i>
+                    <div id="search-history" class="search-history d-none rounded-4">
+                        <div class="search-history-item rounded-4">
+                            <img src="https://api.bbksdajatim.org/tiket-api/upload/lokasi/2024-03-29/file/MIB9eY128h.png" width="50" class="rounded-4" alt="">
+                            Epic Family Adventures s
+                        </div>
+                        <span class="mx-3 text-muted" style="font-size: 12px">Terakhir dilihat</span>
+                        <div class="search-history-item">
+                            <img src="https://api.bbksdajatim.org/tiket-api/upload/lokasi/2024-03-29/file/MIB9eY128h.png" width="50" class="rounded-4" alt="">
+                            Pantai Jungwok
+                        </div>
+                        <div class="search-history-item">
+                            <img src="https://api.bbksdajatim.org/tiket-api/upload/lokasi/2024-03-29/file/MIB9eY128h.png" width="50" class="rounded-4" alt="">
+                            Gunung Kidul
+                        </div>
+                    </div>
+                </form>
 
+            </div>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -34,10 +90,10 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto mx-5 gap-3">
                     <li class="nav-item">
-                        <a class="nav-link fw-semibold active" aria-current="page" href="#">Home</a>
+                        <a class="nav-link fw-semibold active" aria-current="page" href="/">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link fw-semibold" href="#">Wisata</a>
+                        <a class="nav-link fw-semibold" href="/wisata">Wisata</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link fw-semibold" href="#">Favorite</a>
@@ -106,7 +162,8 @@ background: linear-gradient(90deg, rgba(64,64,202,1) 0%, rgba(0,142,255,1) 100%)
                         <a href="https://twitter.com" class="text-light me-3" target="_blank" aria-label="Twitter">
                             <i class="bi bi-twitter fs-4"></i>
                         </a>
-                        <a href="https://instagram.com" class="text-light me-3" target="_blank" aria-label="Instagram">
+                        <a href="https://instagram.com" class="text-light me-3" target="_blank"
+                            aria-label="Instagram">
                             <i class="bi bi-instagram fs-4"></i>
                         </a>
                         <a href="https://linkedin.com" class="text-light" target="_blank" aria-label="LinkedIn">
@@ -131,6 +188,29 @@ background: linear-gradient(90deg, rgba(64,64,202,1) 0%, rgba(0,142,255,1) 100%)
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     @yield('script')
+    <script>
+        function showHistory() {
+            document.getElementById('search-history').classList.remove('d-none');
+            document.getElementById('overlay').style.display = 'block';
+        }
+
+        function hideHistory() {
+            document.getElementById('search-history').classList.add('d-none');
+            document.getElementById('overlay').style.display = 'none';
+        }
+
+        document.getElementById('overlay').addEventListener('click', function() {
+            hideHistory();
+        });
+
+        document.getElementById('search-input').addEventListener('focus', function() {
+            showHistory();
+        });
+
+        document.getElementById('search-input').addEventListener('blur', function() {
+            setTimeout(hideHistory, 100); // Timeout to allow click events on search history items
+        });
+    </script>
     <script>
         var swiper = new Swiper(".mySwiper", {
             loop: true,
