@@ -6,17 +6,18 @@
         <section>
             <div class="swiper mySwiper">
                 <div class="swiper-wrapper" style="height: 28rem">
+
+                    <div class="swiper-slide">
+                        <img src="https://images.pexels.com/photos/237272/pexels-photo-237272.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                            alt="">
+                    </div>
                     <div class="swiper-slide" style="height: 28rem">
                         <img style="height: 28rem"
                             src="https://images.pexels.com/photos/1430677/pexels-photo-1430677.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
                             alt="">
                     </div>
                     <div class="swiper-slide">
-                        <img src="https://images.pexels.com/photos/1430677/pexels-photo-1430677.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-                            alt="">
-                    </div>
-                    <div class="swiper-slide">
-                        <img src="https://images.pexels.com/photos/1430677/pexels-photo-1430677.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                        <img src="https://images.pexels.com/photos/414061/pexels-photo-414061.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
                             alt="">
                     </div>
                 </div>
@@ -61,32 +62,39 @@
                         expedita reiciendis molestias quidem sequi, enim soluta qui explicabo veniam assumenda corrupti!
                         Inventore quo porro laboriosam perspiciatis!</p>
                     <div class="d-flex gap-2 mt-3">
-                        <span class="fw-semibold px-4 btn btn-outline-dark rounded-5 text-sm">
-                            <i class="bi bi-geo-alt"></i> Pantai
-                        </span>
-                        <span class="fw-semibold px-4 btn btn-outline-dark rounded-5">
-                            <i class="bi bi-geo-alt"></i> Gunung
-                        </span>
-                        <span class="fw-semibold px-4 btn btn-outline-dark rounded-5">
-                            <i class="bi bi-water"></i> Air Terjun
-                        </span>
+
+                        @foreach ($kategori as $item)
+                            <span class="kategori-btn fw-semibold px-4 btn btn-outline-dark rounded-5 text-sm"
+                                data-kategori-id="{{ $item->id }}">
+                                {{ $item->nama }}
+                            </span>
+                        @endforeach
                     </div>
 
                 </div>
             </div>
             <div class="swiper swiperCard my-4" style="height: 24rem">
                 <div class="swiper-wrapper">
-                    @for ($i = 1; $i < 6; $i++)
+                    @foreach ($wisata as $item)
                         <div class="swiper-slide swiper-card">
                             <div class=" position-relative">
-                                <img src="https://images.pexels.com/photos/1430677/pexels-photo-1430677.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-                                    class="card-img-top rounded-3" alt="">
+                                @if ($item->gambar)
+                                    @php
+                                        $gambarPertama = json_decode($item->gambar)[0] ?? '';
+                                    @endphp
+                                    @if ($gambarPertama)
+                                        <img src="{{ $gambarPertama }}" alt="Gambar" width="100" class="me-2 rounded-3"
+                                            style="height: 230px">
+                                    @endif
+                                @endif
                                 <button class="btn btn-light position-absolute top-0 end-0 mx-4 my-2 rounded-circle"
                                     style="z-index: 1;">
                                     <i class="bi bi-heart fs-6 fw-bold"></i>
                                 </button>
                                 <div class="mt-3">
-                                    <a href="/detailWisata" class="nav-link"><h6 class="fw-semibold text-start">1. Pantai Indrayanti</h6></a>
+                                    <a href="{{ route('detail', $item->id) }}" class="nav-link">
+                                        <h6 class="fw-semibold text-start">{{ $loop->iteration }}. {{ $item->nama }}</h6>
+                                    </a>
                                     <div class="d-flex">
                                         <i class="bi bi-star-fill text-warning"></i>
                                         <i class="bi bi-star-fill text-warning"></i>
@@ -99,7 +107,7 @@
                             </div>
 
                         </div>
-                    @endfor
+                    @endforeach
                 </div>
                 <div class="swiper-button-prev">
                     <img src="{{ asset('icon/arrow.png') }}" width="50" style="margin-top : -120px" />
@@ -119,30 +127,39 @@
             </div>
             <div class="swiper swiperCard " style="height: 24rem">
                 <div class="swiper-wrapper">
-                    @for ($i = 1; $i < 6; $i++)
-                        <div class="swiper-slide swiper-card">
-                            <div class=" position-relative">
-                                <img src="https://images.pexels.com/photos/1430677/pexels-photo-1430677.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-                                    class="card-img-top rounded-3" alt="">
-                                <button class="btn btn-light position-absolute top-0 end-0 mx-4 my-2 rounded-circle"
-                                    style="z-index: 1;">
-                                    <i class="bi bi-heart fs-6 fw-bold"></i>
-                                </button>
-                                <div class="mt-3">
-                                    <h6 class="fw-semibold  text-start">1. Pantai Indrayanti</h6>
-                                    <div class="d-flex">
-                                        <i class="bi bi-star-fill text-warning"></i>
-                                        <i class="bi bi-star-fill text-warning"></i>
-                                        <i class="bi bi-star-fill text-warning"></i>
-                                        <i class="bi bi-star-fill text-warning"></i>
-                                        <i class="bi bi-star text-warning"></i>
-                                        (30)
-                                    </div>
+                    @foreach ($wisata as $item)
+                    <div class="swiper-slide swiper-card">
+                        <div class=" position-relative">
+                            @if ($item->gambar)
+                                @php
+                                    $gambarPertama = json_decode($item->gambar)[0] ?? '';
+                                @endphp
+                                @if ($gambarPertama)
+                                    <img src="{{ $gambarPertama }}" alt="Gambar" width="100" class="me-2 rounded-3"
+                                        style="height: 230px">
+                                @endif
+                            @endif
+                            <button class="btn btn-light position-absolute top-0 end-0 mx-4 my-2 rounded-circle"
+                                style="z-index: 1;">
+                                <i class="bi bi-heart fs-6 fw-bold"></i>
+                            </button>
+                            <div class="mt-3">
+                                <a href="{{ route('detail', $item->id) }}" class="nav-link">
+                                    <h6 class="fw-semibold text-start">{{ $loop->iteration }}. {{ $item->nama }}</h6>
+                                </a>
+                                <div class="d-flex">
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                    <i class="bi bi-star text-warning"></i>
+                                    (30)
                                 </div>
                             </div>
-
                         </div>
-                    @endfor
+
+                    </div>
+                @endforeach
                 </div>
                 <div class="swiper-button-prev">
                     <img src="{{ asset('icon/arrow.png') }}" width="50" style="margin-top : -120px" />
@@ -155,4 +172,6 @@
         </section>
 
     </div>
+
+    
 @endsection

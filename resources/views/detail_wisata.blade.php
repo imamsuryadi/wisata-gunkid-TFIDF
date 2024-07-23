@@ -6,12 +6,12 @@
             aria-label="breadcrumb" class="mb-5">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item "><a class="text-dark nav-link" href="#">Home</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Library</li>
+                <li class="breadcrumb-item active" aria-current="page">{{ $wisata->nama }}</li>
             </ol>
         </nav>
 
         <div>
-            <h1 class="fw-bold">Pantai Jungkuntod</h1>
+            <h1 class="fw-bold">{{ $wisata->nama }}</h1>
             <div class="d-flex mb-3">
                 <i class="bi bi-star-fill text-warning me-1"></i>
                 <i class="bi bi-star-fill text-warning me-1"></i>
@@ -23,16 +23,47 @@
             <a href="#" class="text-dark"> Tulis Ulasan</a>
         </div>
 
-        <div class="row d-flex mt-3">
+        <div class="row d-flex ">
             <div class="col-md-12">
-                <img src="https://images.pexels.com/photos/1430677/pexels-photo-1430677.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-                    style="width: 100%;height: 60%" class="img-fluid rounded-3" alt="">
+                @if ($wisata->gambar)
+                    @php
+                        $gambarPertama = json_decode($wisata->gambar)[0] ?? '';
+                    @endphp
+                    @if ($gambarPertama)
+                        <img src="{{ $gambarPertama }}" style="width: 100%;height: 60%" class="img-fluid rounded-3"
+                            alt="">
+                    @endif
+                @endif
+
                 <div class="mt-3">
-                    <p>
-                        Lorem ipsum, dolor sit amet consectetur adipisicing elit. Aliquam porro nemo explicabo distinctio
-                        blanditiis tenetur voluptate consequatur, rem voluptatum odio, illum reiciendis in repellendus animi
-                        omnis eligendi aut nesciunt quia? Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolorem culpa tempore, nesciunt laudantium expedita minus quod illo est eum doloremque aliquid autem non fugiat! Dolorem temporibus voluptatibus ipsa quisquam consequatur, ducimus sit voluptatum voluptas. Esse cum beatae ab amet tenetur, magni laudantium nostrum quidem animi blanditiis velit voluptatum quos ad. Lorem ipsum dolor sit amet consectetur adipisicing elit. Consectetur nisi quae quasi consequatur nihil corrupti aut labore tempora asperiores, similique sed voluptate dicta distinctio. Pariatur possimus tempora, obcaecati quas consectetur molestiae temporibus et ea dolorum doloribus animi ab libero recusandae dignissimos quos velit incidunt ratione aliquid magni aliquam iusto? Illum amet deleniti aspernatur eum iste doloribus ad sed blanditiis quo dolor? Deserunt enim quo, doloremque sed facere dicta. Est aperiam, minima quaerat laborum voluptas sit nam hic obcaecati, quos, quod ullam vero veniam provident molestias sequi. Facilis quae ipsa hic, maxime sint nihil repellendus itaque vel nisi est rem delectus?
+                    <h3 class="fw-semibold">
+                        {{ $wisata->nama }} 
+                    </h3>
+                    <span class="badge" style="background-color: {{ $wisata->kategori->warna }}">{{ $wisata->kategori->nama }}</span>
+                    <p class="mt-2">
+                        {{ $wisata->deskripsi }} Lorem ipsum dolor sit amet, consectetur adipisicing elit. Saepe quos illo animi aperiam et magni fugit error a expedita optio necessitatibus reprehenderit, in voluptatibus, ipsa incidunt sit sunt nam eos? Delectus velit debitis ipsa officiis ea necessitatibus modi numquam nostrum? 
+                        <br>
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus nam incidunt numquam eum consectetur? Quos nam, aliquam provident velit voluptatum inventore neque error quod aspernatur similique, molestias alias fugiat numquam? Vero repellat deleniti, voluptatibus quia, alias et inventore aliquam vel officiis soluta distinctio commodi tempore. Ratione expedita saepe esse aperiam!
                     </p>
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <table>
+                                <tr>
+                                    <td class="text-muted">Jam Operasional</td>
+                                    <td class="text-dark">: {{ \Carbon\Carbon::parse($wisata->jam_buka)->format('H:i') }} -
+                                        {{ \Carbon\Carbon::parse($wisata->jam_tutup)->format('H:i') }} WIB</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-muted">Harga Tiket Masuk</td>
+                                    <td class="text-dark">: <span class="fw-semibold text-danger " style="font-weight: 900">{{ $wisata->formatted_harga_tiket_masuk }}</span></td>
+                                </tr>
+
+                            </table>
+                        </div>
+                        <div>
+                            <a href="" class="btn btn-outline-dark rounded-5 px-4 py-2 ms-5"> <i class="bi bi-heart"></i> Simpan Favorite</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -40,17 +71,26 @@
         <h2 class="fw-bold text-dark mb-4">Rekomendasi Wisata</h2>
         <div class="swiper swiperCard " style="height: 24rem">
             <div class="swiper-wrapper">
-                @for ($i = 1; $i < 6; $i++)
+                @foreach ($rekomendasiWisata as $item)
                     <div class="swiper-slide swiper-card">
                         <div class=" position-relative">
-                            <img src="https://images.pexels.com/photos/1430677/pexels-photo-1430677.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-                                class="card-img-top rounded-3" alt="">
+                            @if ($item->gambar)
+                                @php
+                                    $gambarPertama = json_decode($item->gambar)[0] ?? '';
+                                @endphp
+                                @if ($gambarPertama)
+                                    <img src="{{ $gambarPertama }}" alt="Gambar" width="100" class="me-2 rounded-3"
+                                        style="height: 230px">
+                                @endif
+                            @endif
                             <button class="btn btn-light position-absolute top-0 end-0 mx-4 my-2 rounded-circle"
                                 style="z-index: 1;">
                                 <i class="bi bi-heart fs-6 fw-bold"></i>
                             </button>
                             <div class="mt-3">
-                                <h6 class="fw-semibold  text-start">1. Pantai Indrayanti</h6>
+                                <a href="{{ route('detail', $item->id) }}" class="nav-link">
+                                    <h6 class="fw-semibold text-start">{{ $loop->iteration }}. {{ $item->nama }}</h6>
+                                </a>
                                 <div class="d-flex">
                                     <i class="bi bi-star-fill text-warning"></i>
                                     <i class="bi bi-star-fill text-warning"></i>
@@ -61,8 +101,9 @@
                                 </div>
                             </div>
                         </div>
+
                     </div>
-                @endfor
+                @endforeach
             </div>
             <div class="swiper-button-prev">
                 <img src="{{ asset('icon/arrow.png') }}" width="50" style="margin-top : -120px" />
@@ -78,16 +119,16 @@
                 <div class="d-flex justify-content-between">
                     <h3 class="fw-bold">Lokasi</h3>
                     <div class="mt-3 float-end mb-2">
-                        <a href="https://www.google.com/maps/search/?api=1&query=-7.797068,110.370529" target="_blank"
-                            class="nav-link  text-primary fw-semibold px-3 ">
+                        <a href="https://www.google.com/maps/search/?api=1&query={{ $wisata->latitude }},{{ $wisata->longitude }}"
+                            target="_blank" class="nav-link  text-primary fw-semibold px-3 ">
                             Buka di Google Maps
                             <i class="bi bi-arrow-right"></i>
                         </a>
                     </div>
                 </div>
-                
+
                 <div id="map" style="height: 400px;"></div>
-               
+
             </div>
 
             <div class="col-md-12 mt-5">
@@ -115,7 +156,7 @@
                     </div>
                 </div>
             </div>
-        
+
         </div>
 
         <div class="col-md-12 mt-5">
@@ -237,7 +278,7 @@
                                 <i class="bi bi-star text-warning"></i>
                             </div>
                             <div class="mt-2">
-                                
+
                                 <div class="d-flex gap-2 mb-3">
                                     <img src="https://images.pexels.com/photos/1430677/pexels-photo-1430677.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
                                         width="100" class="rounded-3" alt="">
@@ -248,7 +289,7 @@
                                     odit illo expedita doloribus adipisci ratione nesciunt? Obcaecati necessitatibus dolor
                                     illum autem voluptatem sapiente sequi neque eveniet. Voluptatibus aut est nihil, ea sint
                                     cum molestias fugit dolore reiciendis?</p>
-                                    <p class="text-small text-muted" style="font-size: 12px">8 Januari 2024</p>
+                                <p class="text-small text-muted" style="font-size: 12px">8 Januari 2024</p>
 
                                 <hr>
                             </div>
@@ -270,7 +311,7 @@
                                 <i class="bi bi-star text-warning"></i>
                             </div>
                             <div class="mt-2">
-                                
+
                                 <div class="d-flex gap-2 mb-3">
                                     <img src="https://images.pexels.com/photos/1430677/pexels-photo-1430677.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
                                         width="100" class="rounded-3" alt="">
@@ -281,7 +322,7 @@
                                     odit illo expedita doloribus adipisci ratione nesciunt? Obcaecati necessitatibus dolor
                                     illum autem voluptatem sapiente sequi neque eveniet. Voluptatibus aut est nihil, ea sint
                                     cum molestias fugit dolore reiciendis?</p>
-                                    <p class="text-small text-muted" style="font-size: 12px">8 Januari 2024</p>
+                                <p class="text-small text-muted" style="font-size: 12px">8 Januari 2024</p>
 
                                 <hr>
                             </div>
@@ -298,132 +339,66 @@
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            var map = L.map('map').setView([-7.797068, 110.370529], 14);
+            // Ambil data latitude dan longitude dari data yang diteruskan ke view
+            var latitude = @json($wisata->latitude);
+            var longitude = @json($wisata->longitude);
+            var map = L.map('map').setView([latitude, longitude], 14);
 
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 maxZoom: 19,
             }).addTo(map);
 
-            var pantaiJungkuntod = L.marker([-7.797068, 110.370529]).addTo(map)
-                .bindPopup('Pantai Jungkuntod')
+            var marker = L.marker([latitude, longitude]).addTo(map)
+                .bindPopup('{{ $wisata->nama }}')
                 .openPopup();
 
-            // Query Overpass API for nearby restaurants
-            var restaurantUrl =
-                'https://overpass-api.de/api/interpreter?data=[out:json];node[amenity=restaurant](around:5000, -7.797068, 110.370529);out;';
-            fetch(restaurantUrl)
-                .then(response => response.json())
-                .then(data => {
-                    var restaurantList = document.getElementById('restaurant-list');
-                    var elements = data.elements;
+            // Query Overpass API untuk restoran terdekat, ATM, dan hotel
+            function addNearbyPlaces(url, listId, type) {
+                fetch(url)
+                    .then(response => response.json())
+                    .then(data => {
+                        var list = document.getElementById(listId);
+                        var elements = data.elements;
 
-                    // Limit to 5 elements
-                    var limitedElements = elements.slice(0, 5);
+                        // Batasi hingga 5 elemen
+                        var limitedElements = elements.slice(0, 5);
 
-                    limitedElements.forEach(element => {
-                        var latlng = [element.lat, element.lon];
-                        var marker = L.marker(latlng).addTo(map);
+                        limitedElements.forEach(element => {
+                            var latlng = [element.lat, element.lon];
+                            var placeMarker = L.marker(latlng).addTo(map);
 
-                        var name = element.tags.name || 'Restaurant';
-                        var distance = map.distance(pantaiJungkuntod.getLatLng(), latlng);
+                            var name = element.tags.name || type;
+                            var distance = map.distance(marker.getLatLng(), latlng);
 
-                        marker.bindPopup(name);
+                            placeMarker.bindPopup(name);
 
-                        // Format distance
-                        var distanceText = distance >= 1000 ? (distance / 1000).toFixed(2) + ' km' :
-                            distance.toFixed(2) + ' meter';
+                            // Format jarak
+                            var distanceText = distance >= 1000 ? (distance / 1000).toFixed(2) + ' km' :
+                                distance.toFixed(2) + ' meter';
 
-                        // Create Google Maps link
-                        var googleMapsLink =
-                            `https://www.google.com/maps?q=${element.lat},${element.lon}`;
+                            // Buat tautan Google Maps
+                            var googleMapsLink =
+                                `https://www.google.com/maps?q=${element.lat},${element.lon}`;
 
-                        // Add restaurant to the list
-                        var listItem = document.createElement('li');
-                        listItem.className = 'list-group-item';
-                        listItem.innerHTML =
-                            ` <a href="${googleMapsLink}" class="text-decoration-none text-dark" target="_blank">${name}</a> - ${distanceText} `;
-                        restaurantList.appendChild(listItem);
-                    });
-                })
-                .catch(err => console.error(err));
+                            // Tambahkan tempat ke daftar
+                            var listItem = document.createElement('li');
+                            listItem.className = 'list-group-item';
+                            listItem.innerHTML =
+                                ` <a href="${googleMapsLink}" class="text-decoration-none text-dark" target="_blank">${name}</a> - ${distanceText} `;
+                            list.appendChild(listItem);
+                        });
+                    })
+                    .catch(err => console.error(err));
+            }
 
-            // Query Overpass API for nearby ATMs
-            var atmUrl =
-                'https://overpass-api.de/api/interpreter?data=[out:json];node[amenity=atm](around:5000, -7.797068, 110.370529);out;';
-            fetch(atmUrl)
-                .then(response => response.json())
-                .then(data => {
-                    var atmList = document.getElementById('atm-list');
-                    var elements = data.elements;
-
-                    // Limit to 5 elements
-                    var limitedElements = elements.slice(0, 5);
-
-                    limitedElements.forEach(element => {
-                        var latlng = [element.lat, element.lon];
-                        var marker = L.marker(latlng).addTo(map);
-
-                        var name = element.tags.name || 'ATM';
-                        var distance = map.distance(pantaiJungkuntod.getLatLng(), latlng);
-
-                        marker.bindPopup(name);
-
-                        // Format distance
-                        var distanceText = distance >= 1000 ? (distance / 1000).toFixed(2) + ' km' :
-                            distance.toFixed(2) + ' meter';
-
-                        // Create Google Maps link
-                        var googleMapsLink =
-                            `https://www.google.com/maps?q=${element.lat},${element.lon}`;
-
-                        // Add ATM to the list
-                        var listItem = document.createElement('li');
-                        listItem.className = 'list-group-item';
-                        listItem.innerHTML =
-                            ` <a href="${googleMapsLink}" class="text-decoration-none text-dark" target="_blank">${name}</a> - ${distanceText} `;
-                        atmList.appendChild(listItem);
-                    });
-                })
-                .catch(err => console.error(err));
-
-            // Query Overpass API for nearby hotels
-            var hotelUrl = 'https://overpass-api.de/api/interpreter?data=[out:json];node[tourism=hotel](around:5000, -7.797068, 110.370529);out;';
-
-            fetch(hotelUrl)
-                .then(response => response.json())
-                .then(data => {
-                    var hotelList = document.getElementById('hotel-list');
-                    var elements = data.elements;
-
-                    // Limit to 5 elements
-                    var limitedElements = elements.slice(0, 5);
-
-                    limitedElements.forEach(element => {
-                        var latlng = [element.lat, element.lon];
-                        var marker = L.marker(latlng).addTo(map);
-
-                        var name = element.tags.name || 'Hotel';
-                        var distance = map.distance(pantaiJungkuntod.getLatLng(), latlng);
-
-                        marker.bindPopup(name);
-
-                        // Format distance
-                        var distanceText = distance >= 1000 ? (distance / 1000).toFixed(2) + ' km' :
-                            distance.toFixed(2) + ' meter';
-
-                        // Create Google Maps link
-                        var googleMapsLink =
-                            `https://www.google.com/maps?q=${element.lat},${element.lon}`;
-
-                        // Add hotel to the list
-                        var listItem = document.createElement('li');
-                        listItem.className = 'list-group-item';
-                        listItem.innerHTML =
-                            ` <a href="${googleMapsLink}" class="text-decoration-none text-dark" target="_blank">${name}</a> - ${distanceText} `;
-                        hotelList.appendChild(listItem);
-                    });
-                })
-                .catch(err => console.error(err));
+            addNearbyPlaces(
+                'https://overpass-api.de/api/interpreter?data=[out:json];node[amenity=restaurant](around:5000, ' +
+                latitude + ', ' + longitude + ');out;', 'restaurant-list', 'Restaurant');
+            addNearbyPlaces(
+                'https://overpass-api.de/api/interpreter?data=[out:json];node[amenity=atm](around:5000, ' +
+                latitude + ', ' + longitude + ');out;', 'atm-list', 'ATM');
+            addNearbyPlaces(
+                'https://overpass-api.de/api/interpreter?data=[out:json];node[tourism=hotel](around:5000, ' +
+                latitude + ', ' + longitude + ');out;', 'hotel-list', 'Hotel');
         });
     </script>
-@endsection

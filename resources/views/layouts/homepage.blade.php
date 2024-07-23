@@ -93,7 +93,7 @@
                         <a class="nav-link fw-semibold active" aria-current="page" href="/">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link fw-semibold" href="/wisata">Wisata</a>
+                        <a class="nav-link fw-semibold" href="/semua-wisata">Wisata</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link fw-semibold" href="#">Favorite</a>
@@ -228,7 +228,7 @@ background: linear-gradient(90deg, rgba(64,64,202,1) 0%, rgba(0,142,255,1) 100%)
     </script>
 
     <script>
-        var swiper = new Swiper(".swiperCard", {
+        var swiperCard = new Swiper(".swiperCard", {
             slidesPerView: 3,
             spaceBetween: 30,
             pagination: {

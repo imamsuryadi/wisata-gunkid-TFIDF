@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\HomepageController;
+use App\Http\Controllers\KategoriController;
+use App\Http\Controllers\WisataController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -14,13 +17,17 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-Route::get('/detailWisata', function () {
-    return view('detail_wisata');
-});
+
+Route::get('/', [HomepageController::class, 'index']);
+Route::get('/semua-wisata', [HomepageController::class, 'allWisata']);
+Route::get('/detailWisata/{id}', [HomepageController::class, 'detail'])->name('detail');
+Route::get('/wisata/filter/{kategori}', [WisataController::class, 'filter'])->name('wisata.filter');
+
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::middleware('auth')->group(function () {
+    Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+    Route::resource('wisata', WisataController::class);
+    Route::resource('kategori', KategoriController::class);
+});
