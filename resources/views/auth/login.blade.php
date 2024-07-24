@@ -4,7 +4,7 @@
 <div class="container vh-100 ">
     <div class="row justify-content-center align-items-center " style="height: 80vh">
         <div class="col-md-6">
-            <div class="card shadow border-0 rounded-4 p-3">
+            <div class="card shadow border-0 rounded-4 p-5">
                <div class="text-center">
                 <img src="https://api.bbksdajatim.org/tiket-api/upload/lokasi/2024-03-29/file/MIB9eY128h.png" width="100" alt="">
                </div>
