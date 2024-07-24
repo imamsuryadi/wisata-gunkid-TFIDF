@@ -12,9 +12,11 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
+
 <style>
-    .search-history {
+    .search-results {
         position: absolute;
         top: 100%;
         left: 0;
@@ -26,29 +28,17 @@
         z-index: 1001;
     }
 
-    .search-history-item {
+    .search-result-item {
         padding: 10px;
         cursor: pointer;
     }
 
-    .search-history-item:hover {
+    .search-result-item:hover {
         background-color: #f0f0f0;
-    }
-
-    .overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.5);
-        z-index: 999;
-        display: none;
     }
 
     .search-container {
         position: relative;
-        z-index: 1001;
     }
 </style>
 
@@ -62,26 +52,12 @@
             <div class="col-md-4">
                 <form class="d-flex search-container" role="search" onsubmit="return false;">
                     <input id="search-input" class="form-control me-2 ps-5" type="search" placeholder="Cari Wisata"
-                        aria-label="search" style="border-radius: 24px;" onfocus="showHistory()" onblur="hideHistory()">
+                        aria-label="search" style="border-radius: 24px;" oninput="searchWisata()"
+                        onfocus="showResults()" onblur="hideResults()">
                     <i class="bi bi-search position-absolute"
                         style="top: 50%; left: 10px; transform: translateY(-50%);"></i>
-                    <div id="search-history" class="search-history d-none rounded-4">
-                        <div class="search-history-item rounded-4">
-                            <img src="https://api.bbksdajatim.org/tiket-api/upload/lokasi/2024-03-29/file/MIB9eY128h.png" width="50" class="rounded-4" alt="">
-                            Epic Family Adventures s
-                        </div>
-                        <span class="mx-3 text-muted" style="font-size: 12px">Terakhir dilihat</span>
-                        <div class="search-history-item">
-                            <img src="https://api.bbksdajatim.org/tiket-api/upload/lokasi/2024-03-29/file/MIB9eY128h.png" width="50" class="rounded-4" alt="">
-                            Pantai Jungwok
-                        </div>
-                        <div class="search-history-item">
-                            <img src="https://api.bbksdajatim.org/tiket-api/upload/lokasi/2024-03-29/file/MIB9eY128h.png" width="50" class="rounded-4" alt="">
-                            Gunung Kidul
-                        </div>
-                    </div>
+                    <div id="search-results" class="search-results d-none rounded-4"></div>
                 </form>
-
             </div>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -96,15 +72,22 @@
                         <a class="nav-link fw-semibold" href="/semua-wisata">Wisata</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link fw-semibold" href="#">Favorite</a>
+                        <a class="nav-link fw-semibold" href="{{ route('favorites') }}">Favorite</a>
                     </li>
+
 
                 </ul>
                 <ul class="navbar-nav ">
                     @if (Route::has('login'))
                         @auth
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ url('/home') }}">Home</a>
+                                <a class="btn btn-dark rounded-5 px-4 py-2" href="{{ route('logout') }}"
+                                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                {{ __('Logout') }}
+                            </a>
+                            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                @csrf
+                            </form>
                             </li>
                         @else
                             <li class="nav-item">
@@ -181,35 +164,124 @@ background: linear-gradient(90deg, rgba(64,64,202,1) 0%, rgba(0,142,255,1) 100%)
 
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
     </script>
+    <script>
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+    </script>
+    <script>
+        $(document).ready(function() {
+            $('.toggle-favorite-btn').on('click', function() {
+                var btn = $(this);
+                var wisataId = btn.data('id');
+                var url = '{{ route('wisata.toggleFavorite', ':id') }}';
+                url = url.replace(':id', wisataId);
+
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function(response) {
+                        if (response.status === 'added') {
+                            btn.find('i').removeClass('bi-heart').addClass(
+                                'text-danger bi-heart-fill');
+                            btn.attr('title', 'Hapus dari favorit').tooltip('dispose')
+                                .tooltip();
+                        } else if (response.status === 'removed') {
+                            btn.find('i').removeClass('text-danger bi-heart-fill').addClass(
+                                'bi-heart');
+                            btn.attr('title', 'Tambahkan ke favorit').tooltip('dispose')
+                                .tooltip();
+                        }
+                    },
+                    error: function(response) {
+                        if (response.status === 401) {
+                            window.location.href = '{{ route('login') }}';
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     @yield('script')
     <script>
-        function showHistory() {
-            document.getElementById('search-history').classList.remove('d-none');
-            document.getElementById('overlay').style.display = 'block';
+        function searchWisata() {
+            let query = document.getElementById('search-input').value;
+
+            if (query.length > 0) {
+                fetch(`/search?query=${query}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data);
+                        displayResults(data.results);
+                    });
+            } else {
+                clearResults();
+            }
         }
 
-        function hideHistory() {
-            document.getElementById('search-history').classList.add('d-none');
-            document.getElementById('overlay').style.display = 'none';
+        function displayResults(results) {
+            let resultsContainer = document.getElementById('search-results');
+            resultsContainer.innerHTML = '';
+
+            if (results.length > 0) {
+                results.forEach(result => {
+                    let div = document.createElement('div');
+                    div.className = 'search-result-item';
+
+                    let link = document.createElement('a');
+                    link.href = result.detail_url;
+                    link.className = 'search-result-link';
+                    link.innerHTML = `
+                <img src="${result.image_url}" width="50" class="rounded-2" alt="">
+                <span>${result.nama}</span>
+            `;
+                    link.addEventListener('click', function(event) {
+                        console.log('Link clicked:', result.detail_url); 
+                        window.location.href = result.detail_url; 
+                    });
+
+                    div.appendChild(link);
+                    resultsContainer.appendChild(div);
+                });
+            } else {
+                resultsContainer.innerHTML = '<div class="search-result-item">Tidak ada hasil ditemukan</div>';
+            }
+
+            resultsContainer.classList.remove('d-none');
         }
 
-        document.getElementById('overlay').addEventListener('click', function() {
-            hideHistory();
-        });
+        function clearResults() {
+            let resultsContainer = document.getElementById('search-results');
+            resultsContainer.innerHTML = '';
+            resultsContainer.classList.add('d-none');
+        }
 
-        document.getElementById('search-input').addEventListener('focus', function() {
-            showHistory();
-        });
+        function showResults() {
+            let resultsContainer = document.getElementById('search-results');
+            if (resultsContainer.children.length > 0) { // At least one result item
+                resultsContainer.classList.remove('d-none');
+            }
+        }
 
-        document.getElementById('search-input').addEventListener('blur', function() {
-            setTimeout(hideHistory, 100); // Timeout to allow click events on search history items
-        });
+        function hideResults() {
+            setTimeout(() => {
+                let resultsContainer = document.getElementById('search-results');
+                resultsContainer.classList.add('d-none');
+            }, 200);
+        }
     </script>
     <script>
         var swiper = new Swiper(".mySwiper", {
@@ -241,6 +313,45 @@ background: linear-gradient(90deg, rgba(64,64,202,1) 0%, rgba(0,142,255,1) 100%)
             },
         });
     </script>
+    @if ($errors->any())
+        <script>
+            let errorMessages = '';
+            @foreach ($errors->all() as $error)
+                errorMessages += "{{ $error }}\n";
+            @endforeach
+
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: errorMessages,
+            });
+        </script>
+    @endif
+
+    @if (session('success') || session('error'))
+        <script>
+            $(document).ready(function() {
+                var successMessage = "{{ session('success') }}";
+                var errorMessage = "{{ session('error') }}";
+
+                if (successMessage) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: successMessage,
+                    });
+                }
+
+                if (errorMessage) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: errorMessage,
+                    });
+                }
+            });
+        </script>
+    @endif
 
 
 </body>

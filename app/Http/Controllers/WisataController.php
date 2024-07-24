@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Wisata;
 use App\Models\Kategori;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class WisataController extends Controller
@@ -143,5 +144,31 @@ class WisataController extends Controller
         $wisatum->delete();
 
         return redirect()->route('wisata.index')->with('success', 'Wisata deleted successfully.');
+    }
+
+    public function toggleFavorite($id)
+    {
+        if (!Auth::check()) {
+            return response()->json(['status' => 'unauthenticated'], 401);
+        }
+
+        $user = Auth::user();
+        $wisata = Wisata::findOrFail($id);
+
+        if ($user->favorites()->where('wisata_id', $id)->exists()) {
+            $user->favorites()->detach($id);
+            $status = 'removed';
+        } else {
+            $user->favorites()->attach($id);
+            $status = 'added';
+        }
+
+        return response()->json(['status' => $status]);
+    }
+
+    public function favorites()
+    {
+        $wisataFavorites = Auth::user()->favorites()->get();
+        return view('favorites', compact('wisataFavorites'));
     }
 }
