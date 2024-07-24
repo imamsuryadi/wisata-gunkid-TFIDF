@@ -87,21 +87,46 @@
                                             style="height: 230px">
                                     @endif
                                 @endif
-                                <button class="btn btn-light position-absolute top-0 end-0 mx-4 my-2 rounded-circle"
-                                    style="z-index: 1;">
-                                    <i class="bi bi-heart fs-6 fw-bold"></i>
+
+                                <button 
+                                    type="button"
+                                    class="btn btn-light position-absolute top-0 end-0 mx-4 my-2 rounded-circle toggle-favorite-btn"
+                                    style="z-index: 1;" 
+                                    data-bs-toggle="tooltip" 
+                                    data-bs-placement="bottom"
+                                    title="{{ Auth::check() && Auth::user()->favorites->contains($item->id) ? 'Hapus dari favorit' : 'Tambahkan ke favorit' }}"
+                                    data-id="{{ $item->id }}">
+                                    <i
+                                        class="bi fs-6 fw-bold {{ Auth::check() && Auth::user()->favorites->contains($item->id) 
+                                            ? 'text-danger bi-heart-fill' 
+                                            : 'bi-heart' }}">
+                                    </i>
                                 </button>
                                 <div class="mt-3">
                                     <a href="{{ route('detail', $item->id) }}" class="nav-link">
                                         <h6 class="fw-semibold text-start">{{ $loop->iteration }}. {{ $item->nama }}</h6>
                                     </a>
                                     <div class="d-flex">
-                                        <i class="bi bi-star-fill text-warning"></i>
-                                        <i class="bi bi-star-fill text-warning"></i>
-                                        <i class="bi bi-star-fill text-warning"></i>
-                                        <i class="bi bi-star-fill text-warning"></i>
-                                        <i class="bi bi-star text-warning"></i>
-                                        (30)
+                                        @php
+                                            $averageRating = $item->comments->first()->average_rating ?? 0;
+                                            $fullStars = floor($averageRating);
+                                            $halfStar = $averageRating - $fullStars >= 0.5 ? 1 : 0;
+                                            $emptyStars = 5 - $fullStars - $halfStar;
+                                        @endphp
+                                        
+                                        @for ($i = 0; $i < $fullStars; $i++)
+                                            <i class="bi bi-star-fill text-warning"></i>
+                                        @endfor
+        
+                                        @if ($halfStar)
+                                            <i class="bi bi-star-half text-warning"></i>
+                                        @endif
+        
+                                        @for ($i = 0; $i < $emptyStars; $i++)
+                                            <i class="bi bi-star text-warning"></i>
+                                        @endfor
+        
+                                        <span>({{ number_format($averageRating, 1) }})</span>
                                     </div>
                                 </div>
                             </div>
@@ -128,38 +153,39 @@
             <div class="swiper swiperCard " style="height: 24rem">
                 <div class="swiper-wrapper">
                     @foreach ($wisata as $item)
-                    <div class="swiper-slide swiper-card">
-                        <div class=" position-relative">
-                            @if ($item->gambar)
-                                @php
-                                    $gambarPertama = json_decode($item->gambar)[0] ?? '';
-                                @endphp
-                                @if ($gambarPertama)
-                                    <img src="{{ $gambarPertama }}" alt="Gambar" width="100" class="me-2 rounded-3"
-                                        style="height: 230px">
+                        <div class="swiper-slide swiper-card">
+                            <div class=" position-relative">
+                                @if ($item->gambar)
+                                    @php
+                                        $gambarPertama = json_decode($item->gambar)[0] ?? '';
+                                    @endphp
+                                    @if ($gambarPertama)
+                                        <img src="{{ $gambarPertama }}" alt="Gambar" width="100"
+                                            class="me-2 rounded-3" style="height: 230px">
+                                    @endif
                                 @endif
-                            @endif
-                            <button class="btn btn-light position-absolute top-0 end-0 mx-4 my-2 rounded-circle"
-                                style="z-index: 1;">
-                                <i class="bi bi-heart fs-6 fw-bold"></i>
-                            </button>
-                            <div class="mt-3">
-                                <a href="{{ route('detail', $item->id) }}" class="nav-link">
-                                    <h6 class="fw-semibold text-start">{{ $loop->iteration }}. {{ $item->nama }}</h6>
-                                </a>
-                                <div class="d-flex">
-                                    <i class="bi bi-star-fill text-warning"></i>
-                                    <i class="bi bi-star-fill text-warning"></i>
-                                    <i class="bi bi-star-fill text-warning"></i>
-                                    <i class="bi bi-star-fill text-warning"></i>
-                                    <i class="bi bi-star text-warning"></i>
-                                    (30)
+                                <button class="btn btn-light position-absolute top-0 end-0 mx-4 my-2 rounded-circle"
+                                    style="z-index: 1;">
+                                    <i class="bi bi-heart fs-6 fw-bold"></i>
+                                </button>
+                                <div class="mt-3">
+                                    <a href="{{ route('detail', $item->id) }}" class="nav-link">
+                                        <h6 class="fw-semibold text-start">{{ $loop->iteration }}. {{ $item->nama }}
+                                        </h6>
+                                    </a>
+                                    <div class="d-flex">
+                                        <i class="bi bi-star-fill text-warning"></i>
+                                        <i class="bi bi-star-fill text-warning"></i>
+                                        <i class="bi bi-star-fill text-warning"></i>
+                                        <i class="bi bi-star-fill text-warning"></i>
+                                        <i class="bi bi-star text-warning"></i>
+                                        (30)
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
-                    </div>
-                @endforeach
+                        </div>
+                    @endforeach
                 </div>
                 <div class="swiper-button-prev">
                     <img src="{{ asset('icon/arrow.png') }}" width="50" style="margin-top : -120px" />
@@ -173,5 +199,5 @@
 
     </div>
 
-    
+
 @endsection
