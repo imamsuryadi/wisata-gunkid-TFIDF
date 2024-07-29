@@ -1,28 +1,32 @@
 <?php
 
 namespace App\Http\Controllers;
-
+Use App\Models\User;
+use App\Models\Wisata;
+Use App\Models\Kategori;
+Use App\Models\Artikel;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
     public function __construct()
     {
         $this->middleware('auth');
     }
 
-    /**
-     * Show the application dashboard.
-     *
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
     public function index()
     {
-        return view('home');
+        $jumlahWisatawan = User::count(); 
+        $jumlahWisata = Wisata::count();
+        $jumlahKategori = Kategori::count();
+        $jumlahArtikel = Artikel::count();
+        
+        $dataGrafik = User::selectRaw('YEAR(created_at) as tahun, COUNT(*) as jumlah')
+        ->groupBy('tahun')
+        ->orderBy('tahun')
+        ->pluck('jumlah', 'tahun')
+        ->toArray();
+        
+        return view('home', compact('jumlahWisatawan', 'jumlahWisata', 'jumlahKategori', 'jumlahArtikel', 'dataGrafik'));
     }
 }
