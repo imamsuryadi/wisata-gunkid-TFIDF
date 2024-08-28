@@ -2,6 +2,8 @@
 
 @section('title', 'Dashboard')
 
+@section('judul', 'Dashboard')
+
 @section('content')
 <div class="container mt-4">
     <h1 class="mb-4">Dashboard</h1>
@@ -41,12 +43,12 @@
         </div>
     </div>
 
-    <div class="row">
+    {{-- <div class="row">
         <div class="col-md-12">
             <h2 class="mb-4">Grafik Jumlah Wisatawan</h2>
             <canvas id="grafikWisatawan"></canvas>
         </div>
-    </div>
+    </div> --}}
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

@@ -61,16 +61,17 @@
                         obcaecati accusantium odit esse aperiam architecto ipsa velit incidunt consectetur rem provident
                         expedita reiciendis molestias quidem sequi, enim soluta qui explicabo veniam assumenda corrupti!
                         Inventore quo porro laboriosam perspiciatis!</p>
-                        <div class="d-flex gap-2 mt-3">
+                        <div class="d-flex gap-2 mt-3 ">
                             @foreach ($kategori as $item)
                                 <a href="{{ route('wisata.filter', $item->id) }}" class="btn btn-outline-dark rounded-5 text-sm">
                                     {{ $item->nama }}
                                 </a>
                             @endforeach
-                            <a href="/semua-wisata" class="btn btn-primary rounded-5 text-sm ms-3">
-                                Lihat Semua Wisata
+                            <a href="/semua-wisata" class="text-primary ms-auto text-decoration-none fw-semibold">
+                                Lihat Semua Wisata <i class="bi bi-arrow-right"></i>
                             </a>
                         </div>
+                        
                 </div>
             </div>
             <div class="swiper swiperCard my-4" style="height: 24rem">

@@ -8,7 +8,7 @@ class WisatawanController extends Controller
 {
     public function index()
     {
-        $wisatawan = User::all();
+        $wisatawan = User::where('is_admin' , 0)->get();
         return view('admin.wisatawan.index',compact ('wisatawan'));
     }
 }
