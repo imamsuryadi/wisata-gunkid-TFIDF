@@ -48,7 +48,7 @@
         <div class="container">
             <img src="https://api.bbksdajatim.org/tiket-api/upload/lokasi/2024-03-29/file/MIB9eY128h.png" width="70"
                 alt="">
-            <a class="navbar-brand fw-bold" href="#">Gunkidsss Bos.</a>
+            <a class="navbar-brand fw-bold" href="#">GunKid</a>
             <div class="col-md-4">
                 <form class="d-flex search-container" role="search" onsubmit="return false;">
                     <input id="search-input" class="form-control me-2 ps-5" type="search" placeholder="Cari Wisata"
