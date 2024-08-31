@@ -17,15 +17,15 @@ class WisataController extends Controller
         return view('admin.wisata.index', compact('wisatas', 'kategoris'));
     }
     public function filter($kategoriId)
-    {
-        try {
-            $wisata = Wisata::where('kategori_id', $kategoriId)->get();
-            return response()->json($wisata);
-           
-        } catch (\Exception $e) {
-            return response()->json(['error' => 'Data not found'], 404);
-        }
+{
+    try {
+        $wisata = Wisata::where('kategori_id', $kategoriId)->get();
+        return view('kategoriwisata', compact('wisata'));
+    } catch (\Exception $e) {
+        return response()->json(['error' => 'Data not found'], 404);
     }
+}
+
 
     public function create()
     {

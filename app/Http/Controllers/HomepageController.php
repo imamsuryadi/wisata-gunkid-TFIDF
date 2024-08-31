@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Kategori;
 use App\Models\Wisata;
+use App\Models\Artikel;
 use Illuminate\Http\Request;
 
 class HomepageController extends Controller
@@ -149,5 +150,16 @@ class HomepageController extends Controller
         return response()->json([
             'results' => $results,
         ]);
+    }
+
+    public function artikel()
+    {
+        $artikels = Artikel::latest()->get(); 
+        return view('artikel', compact('artikels'));
+    }
+    public function show($id)
+    {
+        $artikel = Artikel::findOrFail($id);
+        return view('detailartikel', compact('artikel'));
     }
 }

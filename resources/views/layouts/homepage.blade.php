@@ -74,6 +74,9 @@
                     <li class="nav-item">
                         <a class="nav-link fw-semibold" href="{{ route('favorites') }}">Favorite</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link fw-semibold" href="{{ route('artikel') }}">Artikel</a>
+                    </li>
 
 
                 </ul>
@@ -283,21 +286,22 @@ background: linear-gradient(90deg, rgba(64,64,202,1) 0%, rgba(0,142,255,1) 100%)
             }, 200);
         }
     </script>
-    <script>
-        var swiper = new Swiper(".mySwiper", {
-            loop: true,
-            navigation: {
-                nextEl: ".swiper-button-next",
-                prevEl: ".swiper-button-prev",
-            },
-            scrollbar: {
-                el: '.swiper-scrollbar',
-            },
-            pagination: {
-                el: '.swiper-pagination',
-            },
-        });
-    </script>
+   <script>
+    var swiper = new Swiper(".mySwiper", {
+        loop: true,
+        navigation: {
+            nextEl: ".swiper-button-next",
+            prevEl: ".swiper-button-prev",
+        },
+        scrollbar: {
+            el: '.swiper-scrollbar',
+        },
+        pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+        },
+    });
+</script>
 
     <script>
         var swiperCard = new Swiper(".swiperCard", {

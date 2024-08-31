@@ -83,7 +83,7 @@
                     </div>
                     <ul class="sidebar-menu">
                         <li class="menu-header">Dashboard</li>
-                        <li class="{{ request()->is('dashboard') ? 'active' : '' }}">
+                        <li class="{{ request()->is('home') ? 'active' : '' }}">
                             <a href="{{ route('home') }}" class="nav-link">
                                 <i class="bi bi-grid"></i>
                                 <span>Dashboard</span>
@@ -103,11 +103,18 @@
                             </a>
                         </li>
                         <li class="{{ request()->is('wisatawan') ? 'active' : '' }}">
-                            <a href="" class="nav-link">
+                            <a href="{{ route('wisatawan') }}" class="nav-link">
                                 <i class="bi bi-people"></i>
                                 <span>Wisatawan</span>
                             </a>
                         </li>
+                        <li class="{{ request()->is('artikels') ? 'active' : '' }}">
+                            <a href="{{ route('artikels.index') }}" class="nav-link">
+                                <i class="bi bi-book"></i>
+                                <span>Artikel</span>
+                            </a>
+                        </li>
+                        
                         
 
             </div>

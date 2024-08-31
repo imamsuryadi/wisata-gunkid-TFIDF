@@ -61,16 +61,17 @@
                         obcaecati accusantium odit esse aperiam architecto ipsa velit incidunt consectetur rem provident
                         expedita reiciendis molestias quidem sequi, enim soluta qui explicabo veniam assumenda corrupti!
                         Inventore quo porro laboriosam perspiciatis!</p>
-                    <div class="d-flex gap-2 mt-3">
-
-                        @foreach ($kategori as $item)
-                            <span class="kategori-btn fw-semibold px-4 btn btn-outline-dark rounded-5 text-sm"
-                                data-kategori-id="{{ $item->id }}">
-                                {{ $item->nama }}
-                            </span>
-                        @endforeach
-                    </div>
-
+                        <div class="d-flex gap-2 mt-3 ">
+                            @foreach ($kategori as $item)
+                                <a href="{{ route('wisata.filter', $item->id) }}" class="btn btn-outline-dark rounded-5 text-sm">
+                                    {{ $item->nama }}
+                                </a>
+                            @endforeach
+                            <a href="/semua-wisata" class="text-primary ms-auto text-decoration-none fw-semibold">
+                                Lihat Semua Wisata <i class="bi bi-arrow-right"></i>
+                            </a>
+                        </div>
+                        
                 </div>
             </div>
             <div class="swiper swiperCard my-4" style="height: 24rem">
@@ -78,6 +79,7 @@
                     @foreach ($wisata as $item)
                         <div class="swiper-slide swiper-card">
                             <div class=" position-relative">
+                                <a href="{{ route('detail', $item->id) }}" class="d-block">
                                 @if ($item->gambar)
                                     @php
                                         $gambarPertama = json_decode($item->gambar)[0] ?? '';
@@ -87,7 +89,7 @@
                                             style="height: 230px">
                                     @endif
                                 @endif
-
+                                </a>
                                 <button 
                                     type="button"
                                     class="btn btn-light position-absolute top-0 end-0 mx-4 my-2 rounded-circle toggle-favorite-btn"
