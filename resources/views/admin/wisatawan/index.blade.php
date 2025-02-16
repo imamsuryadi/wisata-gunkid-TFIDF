@@ -11,6 +11,7 @@
             <thead>
                 <tr>
                     <th>No.</th>
+                    <th>Nama</th>
                     <th>Email</th>
                     <th>Tanggal Dibuat</th>
                 </tr>
@@ -19,6 +20,7 @@
                 @foreach ($wisatawan as $index => $w)
                 <tr>
                     <td>{{ $index + 1 }}</td>
+                    <td>{{ $w->name }}</td>
                     <td>{{ $w->email }}</td>
                     <td>{{ $w->created_at->format('d-m-Y H:i:s') }}</td>
                 </tr>

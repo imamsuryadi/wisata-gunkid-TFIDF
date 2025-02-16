@@ -22,7 +22,7 @@
                     alt="No Favorites" class="img-fluid mb-4" style="max-width: 300px;">
                 <p class="fs-4 fw-semibold m-0">Belum ada wisata favorit yang ditambahkan.</p>
                 <p class="fs-6 m-0">Jelajahi wisata kami dan tambahkan ke favorit Anda!</p>
-                <a href="{{ route('wisata.index') }}" class="btn btn-dark rounded-5 px-4 mt-3">Jelajahi Wisata </a>
+                <a href="{{ route('wisata.index') }}" class="btn btn-dark rounded-5 px-4 mt-3">Jelajahi Wisata</a>
             </div>
         @else
             <div class="row">
@@ -52,12 +52,21 @@
                                     <div class="mt-3">
                                         <h6 class="fw-semibold text-start text-dark text-decoration-none">{{ $loop->iteration }}. {{ $item->nama }}</h6>
                                         <div class="d-flex">
-                                            <i class="bi bi-star-fill text-warning"></i>
-                                            <i class="bi bi-star-fill text-warning"></i>
-                                            <i class="bi bi-star-fill text-warning"></i>
-                                            <i class="bi bi-star-fill text-warning"></i>
-                                            <i class="bi bi-star text-warning"></i>
-                                            (30)
+                                            <h5 class="fw-bold mb-0">
+                                                {{ number_format($item->comments_avg_rating ?? 0, 1) }}
+                                            </h5>
+                                            <div class="ms-2">
+                                                @if ($item->comments_avg_rating > 0)
+                                                    @for ($i = 1; $i <= 5; $i++)
+                                                        <i class="bi bi-star{{ $i <= floor($item->comments_avg_rating) ? '-fill text-warning' : '' }}"></i>
+                                                    @endfor
+                                                @else
+                                                    @for ($i = 1; $i <= 5; $i++)
+                                                        <i class="bi bi-star text-warning"></i>
+                                                    @endfor
+                                                @endif
+                                                <span> ({{ $item->comments_count }} Ulasan)</span>
+                                            </div>
                                         </div>
                                     </div>
                                 </a>

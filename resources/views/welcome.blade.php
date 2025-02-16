@@ -40,27 +40,68 @@
                         class="img-fluid" alt="">
                 </div>
                 <div class="col-md-8">
-                    <span>Jelajahi</span>
+                    <span></span>
                     <h2 class="fw-bold text-dark mt-0 mb-4">Gunung Kidul</h2>
-                    <p class="text-small ">Lorem ipsum dolor sit amet consectetur adipisicing elit. Animi, voluptate natus,
-                        obcaecati accusantium odit esse aperiam architecto ipsa velit incidunt consectetur rem provident
-                        expedita reiciendis molestias quidem sequi, enim soluta qui explicabo veniam assumenda corrupti!
-                        Inventore quo porro laboriosam perspiciatis!</p>
+                    <p class="text-small ">Gunung Kidul adalah destinasi wisata yang menawarkan keindahan alam yang beragam dan memukau. Kawasan ini dikenal dengan pantainya yang berpasir putih, lautan biru yang jernih, serta bukit-bukit karst yang menakjubkan. Selain itu, terdapat berbagai gua eksotis dengan stalaktit dan stalagmit yang memukau, cocok untuk kegiatan susur gua yang memacu adrenalin. Wisatawan juga dapat menikmati air terjun alami dengan suasana yang asri dan menenangkan, serta embung yang menawarkan pemandangan matahari terbenam yang spektakuler.
+                        Bagi pecinta petualangan, Gunung Kidul memiliki area perbukitan dengan jalur trekking yang menantang dan panorama alam yang mempesona. Semua pengalaman ini menjadikan Gunung Kidul sebagai destinasi yang sempurna untuk berlibur, menjelajah, dan menikmati keajaiban alam.</p>
                 </div>
             </div>
         </section>
+
+        <div class="swiper swiperCard my-4" style="height: 32rem">
+            <h2>Sedang Trending</h2>
+            <br>
+            <div class="swiper-wrapper">
+                @foreach ($trendingWisata as $item)
+                    @php
+                        $averageRating = $item->comments->avg('rating');
+                        $reviewsCount = $item->comments->count();
+                        $gambarPertama = json_decode($item->gambar)[0] ?? '';
+                    @endphp
+                    <div class="swiper-slide swiper-card">
+                        <div class="card p-3 shadow border-primary rounded-3">
+                            <div class="position-relative">
+                                @if ($gambarPertama)
+                                    <img src="{{ $gambarPertama }}" alt="Gambar" class="card-img-top rounded-3" style="height: 230px; object-fit: cover;">
+                                @endif
+                                <div class="card-body mt-3">
+                                    <a href="{{ route('detail', $item->id) }}" class="nav-link text-dark">
+                                        <h5 class="card-title fw-semibold text-start">{{ $item->nama }}</h5>
+                                    </a>
+                                    <div class="d-flex align-items-center mb-2">
+                                        <h6 class="fw-bold mb-0">{{ number_format($averageRating ?? 0, 1) }}</h6>
+                                        <div class="ms-2">
+                                            @for ($i = 1; $i <= 5; $i++)
+                                                <i class="bi bi-star{{ $i <= floor($averageRating) ? '-fill text-warning' : '' }}"></i>
+                                            @endfor
+                                            <span class="ms-1">({{ $reviewsCount }} Ulasan)</span>
+                                        </div>
+                                    </div>
+                                    <div class="text-start mt-2">
+                                        <span class="fw-semibold badge bg-danger">Rp. {{ number_format($item->harga_tiket_masuk, 0, ',', '.') }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+            <div class="swiper-button-prev">
+                <img src="{{ asset('icon/arrow.png') }}" width="50" style="margin-top: -120px" />
+            </div>
+            <div class="swiper-button-next">
+                <img src="{{ asset('icon/arrow.png') }}" width="50" style="margin-top: -120px" />
+            </div>
+            <div class="swiper-pagination"></div>
+        </div>
 
         {{-- LIST WISATA --}}
 
         <section class="my-5">
             <div class="row justify-content-center">
                 <div class="col-md-12">
-                    <h2 class="fw-bold text-dark mt-0 mb-3 mt-5">Paling Banyak Dikunjungi</h2>
-                    <p class="text-small mb-3 ">Lorem ipsum dolor sit amet consectetur adipisicing elit. Animi, voluptate
-                        natus,
-                        obcaecati accusantium odit esse aperiam architecto ipsa velit incidunt consectetur rem provident
-                        expedita reiciendis molestias quidem sequi, enim soluta qui explicabo veniam assumenda corrupti!
-                        Inventore quo porro laboriosam perspiciatis!</p>
+                    <h2 class="fw-bold text-dark mt-0 mb-3 mt-5">Top Rekomendasi</h2>
+                    <p class="text-small mb-3 ">Menampilkan destinasi wisata terbaik berdasarkan rating, popularitas, atau kategori tertentu, sehingga memudahkan pengguna menemukan tempat wisata unggulan di Gunung Kidul.</p>
                         <div class="d-flex gap-2 mt-3 ">
                             @foreach ($kategori as $item)
                                 <a href="{{ route('wisata.filter', $item->id) }}" class="btn btn-outline-dark rounded-5 text-sm">
@@ -148,8 +189,8 @@
         <section class="my-5">
             <div class="row justify-content-center">
                 <div class="col-md-12">
-                    <h2 class="fw-bold text-dark mt-0 mb-3 mt-5">Paling Sepi Nih Boss</h2>
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Similique, neque.</p>
+                    <h2 class="fw-bold text-dark mt-0 mb-3 mt-5">Yang Menarik di kunjungi</h2>
+                    <p></p>
                 </div>
             </div>
             <div class="swiper swiperCard " style="height: 24rem">
@@ -176,12 +217,26 @@
                                         </h6>
                                     </a>
                                     <div class="d-flex">
-                                        <i class="bi bi-star-fill text-warning"></i>
-                                        <i class="bi bi-star-fill text-warning"></i>
-                                        <i class="bi bi-star-fill text-warning"></i>
-                                        <i class="bi bi-star-fill text-warning"></i>
-                                        <i class="bi bi-star text-warning"></i>
-                                        (30)
+                                        @php
+                                            $averageRating = $item->comments->first()->average_rating ?? 0;
+                                            $fullStars = floor($averageRating);
+                                            $halfStar = $averageRating - $fullStars >= 0.5 ? 1 : 0;
+                                            $emptyStars = 5 - $fullStars - $halfStar;
+                                        @endphp
+                                        
+                                        @for ($i = 0; $i < $fullStars; $i++)
+                                            <i class="bi bi-star-fill text-warning"></i>
+                                        @endfor
+        
+                                        @if ($halfStar)
+                                            <i class="bi bi-star-half text-warning"></i>
+                                        @endif
+        
+                                        @for ($i = 0; $i < $emptyStars; $i++)
+                                            <i class="bi bi-star text-warning"></i>
+                                        @endfor
+        
+                                        <span>({{ number_format($averageRating, 1) }})</span>
                                     </div>
                                 </div>
                             </div>

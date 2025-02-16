@@ -8,6 +8,8 @@ use App\Http\Controllers\WisataController;
 use App\Http\Controllers\WisatawanController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\SewaMotorController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -48,6 +50,10 @@ Route::group(['middleware' => 'admin'], function () {
     Route::resource('kategori', KategoriController::class);
     Route::resource('artikels', ArtikelController::class);
     Route::get('/wisatawan', [WisatawanController::class, 'index'])->name('wisatawan');
-
+    Route::get('/wisata/filter-by-category', [WisataController::class, 'filterByCategory'])->name('wisata.filter-by-category');
+    Route::get('/sewa-motor', [SewaMotorController::class, 'index'])->name('sewaMotor.index');
+    Route::post('/sewa-motor', [SewaMotorController::class, 'store'])->name('sewaMotor.store');
+    Route::put('/sewa-motor/{id}', [SewaMotorController::class, 'update'])->name('sewaMotor.update');
+    Route::delete('/sewa-motor/{id}', [SewaMotorController::class, 'destroy'])->name('sewaMotor.destroy');
 
 });

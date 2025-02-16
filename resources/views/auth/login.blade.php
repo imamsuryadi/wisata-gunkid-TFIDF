@@ -8,7 +8,7 @@
                <div class="text-center">
                 <img src="https://api.bbksdajatim.org/tiket-api/upload/lokasi/2024-03-29/file/MIB9eY128h.png" width="100" alt="">
                </div>
-                <h4 class="fw-semibold text-center mb-4">Login Boyyy</h4>
+                <h4 class="fw-semibold text-center mb-4">Login</h4>
                 <div class="card-body">
                    
                     <form method="POST" action="{{ route('login') }}">
@@ -52,7 +52,10 @@
                                     <a class="btn btn-link nav-link text-primary mt-3 " href="{{ route('password.request') }}">
                                         {{ __('Forgot Your Password?') }}
                                     </a>
-                                @endif
+                                    @endif
+                                    <a class="btn btn-link nav-link text-primary mt-3 " href="{{ route('register') }}">
+                                        {{ __('Register') }}
+                                    </a>
                             </div>
                         </div>
                     </form>

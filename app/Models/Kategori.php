@@ -11,8 +11,8 @@ class Kategori extends Model
     protected $table = 'kategori';
     protected $fillable = ['nama','warna'];
 
-    // public function wisata()
-    // {
-    //     return $this->hasMany(Wisata::class);
-    // }
+    public function wisata()
+{
+    return $this->hasMany(Wisata::class);
+}
 }

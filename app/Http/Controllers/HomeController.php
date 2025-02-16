@@ -20,6 +20,8 @@ class HomeController extends Controller
         $jumlahWisata = Wisata::count();
         $jumlahKategori = Kategori::count();
         $jumlahArtikel = Artikel::count();
+
+        $kategoriCounts = Kategori::withCount('wisata')->get();
         
         $dataGrafik = User::selectRaw('YEAR(created_at) as tahun, COUNT(*) as jumlah')
         ->groupBy('tahun')
@@ -27,6 +29,6 @@ class HomeController extends Controller
         ->pluck('jumlah', 'tahun')
         ->toArray();
         
-        return view('home', compact('jumlahWisatawan', 'jumlahWisata', 'jumlahKategori', 'jumlahArtikel', 'dataGrafik'));
+        return view('home', compact('jumlahWisatawan', 'jumlahWisata', 'jumlahKategori', 'jumlahArtikel', 'dataGrafik', 'kategoriCounts'));
     }
 }

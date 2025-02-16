@@ -1,11 +1,10 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\models\artikel;
-use illuminate\Support\Facades\Storage;
+
+use App\Models\Artikel; // Pastikan menggunakan huruf kapital pada Models
+use Illuminate\Support\Facades\Storage; // Perbaiki penulisan Storage
 use Illuminate\Http\Request;
-
-
 
 class ArtikelController extends Controller
 {
@@ -69,7 +68,7 @@ class ArtikelController extends Controller
     {
         $artikel = Artikel::find($id);
         if ($artikel->gambar) {
-            Storage::disk('public')->delete($artikel->gambar);
+            Storage::disk('public')->delete($artikel->gambar); // Pastikan Storage digunakan dengan benar
         }
         $artikel->delete();
         return redirect()->route('artikels.index');

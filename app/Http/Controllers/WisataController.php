@@ -10,23 +10,35 @@ use Illuminate\Support\Facades\Storage;
 
 class WisataController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $wisatas = Wisata::all();
+        // Retrieve the category filter from the request
+        $kategoriId = $request->input('kategori_id');
+
+        // Fetch categories for the dropdown
         $kategoris = Kategori::all();
-        return view('admin.wisata.index', compact('wisatas', 'kategoris'));
+
+        // Fetch the filtered or all 'wisatas'
+        if ($kategoriId) {
+            $wisatas = Wisata::where('kategori_id', $kategoriId)->get();
+        } else {
+            $wisatas = Wisata::all();
+        }
+
+        // Return the view with data
+        return view('admin.wisata.index', compact('wisatas', 'kategoris', 'kategoriId'));
     }
+
     public function filter($kategoriId)
-{
-    try {
-        $wisata = Wisata::where('kategori_id', $kategoriId)->get();
-        return view('kategoriwisata', compact('wisata'));
-    } catch (\Exception $e) {
-        return response()->json(['error' => 'Data not found'], 404);
+    {
+        try {
+            $wisata = Wisata::where('kategori_id', $kategoriId)->get();
+            return view('kategoriwisata', compact('wisata'));
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Data not found'], 404);
+        }
     }
-}
-
-
+    
     public function create()
     {
         $kategoris = Kategori::all();
@@ -167,8 +179,10 @@ class WisataController extends Controller
     }
 
     public function favorites()
-    {
-        $wisataFavorites = Auth::user()->favorites()->get();
-        return view('favorites', compact('wisataFavorites'));
-    }
+{
+    $wisataFavorites = Auth::user()->favorites()->withCount('comments')->withAvg('comments', 'rating')->get();
+
+    return view('favorites', compact('wisataFavorites'));
+}
+
 }

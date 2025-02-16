@@ -6,6 +6,8 @@ use App\Models\Kategori;
 use App\Models\Wisata;
 use App\Models\Artikel;
 use Illuminate\Http\Request;
+use App\Models\SewaMotor;
+
 
 class HomepageController extends Controller
 {
@@ -16,7 +18,16 @@ class HomepageController extends Controller
             $query->selectRaw('wisata_id, AVG(rating) as average_rating')
                   ->groupBy('wisata_id');
         }])->get();
-        return view('welcome', compact('kategori', 'wisata'));
+        $trendingWisata = Wisata::select('wisata.*')
+            ->leftJoin('comments', 'wisata.id', '=', 'comments.wisata_id')
+            ->selectRaw('AVG(comments.rating) as average_rating, COUNT(comments.id) as comment_count')
+            ->groupBy('wisata.id')
+            ->orderByDesc('average_rating') // Highest rating first
+            ->orderByDesc('comment_count') // Then order by the most comments
+            ->limit(5) // Limit to top 5, for example
+            ->get();
+
+        return view('welcome', compact('kategori', 'wisata', 'trendingWisata'));
     }
 
     public function detail($id)
@@ -25,6 +36,7 @@ class HomepageController extends Controller
         $comments = $wisata->comments;
         $averageRating = $comments->avg('rating');
         $ratingCounts = $comments->groupBy('rating')->map->count();
+        $sewaMotors = SewaMotor::where('wisata_id', $id)->get(); 
 
         $allWisata = Wisata::where('id', '!=', $id)->get();
 
@@ -35,6 +47,7 @@ class HomepageController extends Controller
         $documents[$id] = $wisata->deskripsi; 
 
         $tfidf = $this->calculateTfIdf($documents);
+        // dd($tfidf);
 
         $selectedTfIdf = $tfidf[$id];
         $similarities = [];
@@ -67,7 +80,7 @@ class HomepageController extends Controller
             }
         }
 
-        return view('detail_wisata', compact('wisata', 'rekomendasiWisata', 'comments', 'averageRating', 'ratingCounts'));
+        return view('detail_wisata', compact('wisata', 'rekomendasiWisata', 'comments', 'averageRating', 'ratingCounts','sewaMotors'));
     }
     private function calculateTfIdf($documents)
     {
@@ -88,11 +101,17 @@ class HomepageController extends Controller
             }
         }
 
+        // dd($tf);
+        
+        
+
         $numDocuments = count($documents);
         foreach ($df as $term => $docIds) {
             $df[$term] = count($docIds);
             $idf[$term] = log($numDocuments / $df[$term]);
         }
+        // dd($idf);
+        
 
         foreach ($tf as $docId => $terms) {
             foreach ($terms as $term => $count) {
@@ -101,7 +120,12 @@ class HomepageController extends Controller
         }
 
         return $tfidf;
+        
     }
+    
+
+
+    
 
     private function cosineSimilarity($vec1, $vec2)
     {
@@ -125,10 +149,30 @@ class HomepageController extends Controller
 
     public function allWisata()
     {
-        $wisata = Wisata::all();
+        // Get all wisata with paginated results
+        $wisata = Wisata::with('comments')->paginate(12);
+
+        // Get trending wisata based on the highest average rating and comment count
+        $trendingWisata = Wisata::select('wisata.*')
+            ->leftJoin('comments', 'wisata.id', '=', 'comments.wisata_id')
+            ->selectRaw('AVG(comments.rating) as average_rating, COUNT(comments.id) as comment_count')
+            ->groupBy('wisata.id')
+            ->orderByDesc('average_rating') // Highest rating first
+            ->orderByDesc('comment_count') // Then order by the most comments
+            ->limit(5) // Limit to top 5, for example
+            ->get();
+
+        // For debugging purposes, you can dump the trending wisata
+        
+
+        // Get all categories
         $kategori = Kategori::all();
-        return view('semua_wisata', compact('wisata', 'kategori'));
+
+        // Return view with the wisata, categories, and trending wisata data
+        return view('semua_wisata', compact('wisata', 'kategori', 'trendingWisata'));
     }
+
+
 
     public function search(Request $request)
     {

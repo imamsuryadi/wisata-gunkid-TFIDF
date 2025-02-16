@@ -44,8 +44,12 @@ class Wisata extends Model
     }
 
     public function comments()
-{
-    return $this->hasMany(Comment::class);
-}
+    {
+        return $this->hasMany(Comment::class);
+    }
+    public function sewaMotor()
+    {
+        return $this->hasMany(SewaMotor::class, 'wisata_id');
+    }
 
 }

@@ -4,15 +4,23 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Bootstrap demo</title>
+    <title id="page-title">Wisata Gunung Kidul</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <!-- Owl Carousel CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/owl-carousel/1.3.3/owl.carousel.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/owl-carousel/1.3.3/owl.theme.default.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
+
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
 </head>
 
 <style>
@@ -44,7 +52,7 @@
 
 <body>
     <div class="overlay" id="overlay"></div>
-    <nav class="navbar navbar-expand-lg ">
+    <nav class="navbar navbar-expand-lg sticky-top bg-white shadow  ">
         <div class="container">
             <img src="https://api.bbksdajatim.org/tiket-api/upload/lokasi/2024-03-29/file/MIB9eY128h.png" width="70"
                 alt="">
@@ -66,19 +74,17 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto mx-5 gap-3">
                     <li class="nav-item">
-                        <a class="nav-link fw-semibold active" aria-current="page" href="/">Home</a>
+                        <a class="nav-link fw-semibold {{ Request::is('/') ? 'active' : '' }}" aria-current="page" href="/">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link fw-semibold" href="/semua-wisata">Wisata</a>
+                        <a class="nav-link fw-semibold {{ Request::is('semua-wisata') ? 'active' : '' }}" href="/semua-wisata">Wisata</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link fw-semibold" href="{{ route('favorites') }}">Favorite</a>
+                        <a class="nav-link fw-semibold {{ Request::routeIs('favorites') ? 'active' : '' }}" href="{{ route('favorites') }}">Favorite</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link fw-semibold" href="{{ route('artikel') }}">Artikel</a>
-                    </li>
-
-
+                        <a class="nav-link fw-semibold {{ Request::routeIs('artikel') ? 'active' : '' }}" href="{{ route('artikel') }}">Artikel</a>
+                    </li>                    
                 </ul>
                 <ul class="navbar-nav ">
                     @if (Route::has('login'))
@@ -125,8 +131,8 @@ background: linear-gradient(90deg, rgba(64,64,202,1) 0%, rgba(0,142,255,1) 100%)
                         <img src="https://api.bbksdajatim.org/tiket-api/upload/lokasi/2024-03-29/file/MIB9eY128h.png"
                             width="100" alt="Logo">
                     </div>
-                    <p>Jl. Cempedak I No. 10, Cempedak, Kec. Cilacap Tengah, Kab. Cilacap, Jawa Tengah</p>
-                    <p>Gunung Kidul</p>
+                    <p>Jl. KH Agus Salim No.126, Ledoksari, Kepek, Kec. Wonosari, Kabupaten Gunung Kidul, Daerah Istimewa Yogyakarta 55813</p>
+                    <p>Dinas Pariwisata Kab. Gunungkidul</p>
                 </div>
                 <!-- Useful Links -->
                 <div class="col-md-4 mb-3 mb-md-0 text-center">
@@ -159,11 +165,11 @@ background: linear-gradient(90deg, rgba(64,64,202,1) 0%, rgba(0,142,255,1) 100%)
                 </div>
             </div>
             <div class="text-center mt-4">
-                <p class="mb-0">Copyright &copy; 2023 - Gunkids. All Rights Reserved.</p>
+                <p class="mb-0">Copyright &copy; 2025 - Gunkids. All Rights Reserved.</p>
             </div>
         </div>
     </footer>
-
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -218,6 +224,12 @@ background: linear-gradient(90deg, rgba(64,64,202,1) 0%, rgba(0,142,255,1) 100%)
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <!-- jQuery (required for Owl Carousel) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Owl Carousel JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/owl-carousel/1.3.3/owl.carousel.min.js"></script>
+
     @yield('script')
     <script>
         function searchWisata() {
@@ -357,7 +369,24 @@ background: linear-gradient(90deg, rgba(64,64,202,1) 0%, rgba(0,142,255,1) 100%)
         </script>
     @endif
 
+    <script>
+        // When a link is clicked, update the page title dynamically
+        document.querySelectorAll('a[data-title]').forEach(function (link) {
+            link.addEventListener('click', function (e) {
+                document.getElementById('page-title').textContent = link.getAttribute('data-title');
+            });
+        });
 
+        // Set initial page title based on the current link
+        const currentPath = window.location.pathname;
+        const navLinks = document.querySelectorAll('a[data-title]');
+
+        navLinks.forEach(function (link) {
+            if (link.getAttribute('href') === currentPath) {
+                document.getElementById('page-title').textContent = link.getAttribute('data-title');
+            }
+        });
+    </script>
 </body>
 
 </html>

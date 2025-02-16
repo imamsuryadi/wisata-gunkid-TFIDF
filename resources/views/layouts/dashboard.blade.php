@@ -114,6 +114,13 @@
                                 <span>Artikel</span>
                             </a>
                         </li>
+                        <li class="{{ request()->is('sewa-motor') ? 'active' : '' }}">
+                            <a href="{{ route('sewaMotor.index') }}" class="nav-link">
+                                <i class="bi bi-motorbike"></i>
+                                <span>Sewa Kendaraan</span>
+                            </a>
+                        </li>
+                        
                         
                         
 

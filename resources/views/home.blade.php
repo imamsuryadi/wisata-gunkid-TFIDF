@@ -50,9 +50,38 @@
         </div>
     </div> --}}
 </div>
+    <div class="card shadow border-0">
+        <div class="card-body"> 
+            <div class="row ">
+                <div class="col-md-12">
+                    <h4 class="mb-4">Jumlah Wisata</h2>
+                    <table class="table table-bordered" id="datatable">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Kategori</th>
+                                <th>Jumlah Wisata</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($kategoriCounts as $kategori)
+                                <tr>
+                                    <td>{{$loop->iteration}}</td>
+                                    <td>{{ $kategori->nama }}</td>
+                                    <td>{{ $kategori->wisata_count }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>    
+        </div>
+    </div>
+</div>
+   
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
+<!-- <script>
     var ctx = document.getElementById('grafikWisatawan').getContext('2d');
     var grafikWisatawan = new Chart(ctx, {
         type: 'line',
@@ -78,6 +107,6 @@
             }
         }
     });
-</script>
+</script> -->
 @endsection
     

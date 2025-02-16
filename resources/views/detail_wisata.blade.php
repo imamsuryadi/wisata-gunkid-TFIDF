@@ -35,6 +35,7 @@
 
         <div>
             <div class="d-flex mb-3">
+                {{ number_format($averageRating ?? 0, 1) }}
                 @php
                     $fullStars = floor($averageRating);
                     $halfStar = $averageRating - $fullStars >= 0.5 ? 1 : 0;
@@ -77,16 +78,7 @@
                     <span class="badge"
                         style="background-color: {{ $wisata->kategori->warna }}">{{ $wisata->kategori->nama }}</span>
                     <p class="mt-2">
-                        {{ $wisata->deskripsi }} Lorem ipsum dolor sit amet, consectetur adipisicing elit. Saepe quos illo
-                        animi aperiam et magni fugit error a expedita optio necessitatibus reprehenderit, in voluptatibus,
-                        ipsa incidunt sit sunt nam eos? Delectus velit debitis ipsa officiis ea necessitatibus modi numquam
-                        nostrum?
-                        <br>
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus nam incidunt numquam eum
-                        consectetur? Quos nam, aliquam provident velit voluptatum inventore neque error quod aspernatur
-                        similique, molestias alias fugiat numquam? Vero repellat deleniti, voluptatibus quia, alias et
-                        inventore aliquam vel officiis soluta distinctio commodi tempore. Ratione expedita saepe esse
-                        aperiam!
+                        {{ $wisata->deskripsi }} 
                     </p>
                     <div class="d-flex justify-content-between">
                         <div>
@@ -152,17 +144,26 @@
                                     <h6 class="fw-semibold text-start">{{ $loop->iteration }}. {{ $item->nama }}</h6>
                                 </a>
                                 <div class="d-flex">
-                                    <i class="bi bi-star-fill text-warning"></i>
-                                    <i class="bi bi-star-fill text-warning"></i>
-                                    <i class="bi bi-star-fill text-warning"></i>
-                                    <i class="bi bi-star-fill text-warning"></i>
-                                    <i class="bi bi-star text-warning"></i>
-                                    (30)
+                                    <h5 class="fw-bold">
+                                        {{ number_format($averageRating ?? 0, 1) }}
+                                    </h5>
+                                    <div>
+                                        @if ($averageRating > 0)
+                                            @for ($i = 1; $i <= 5; $i++)
+                                                <i class="bi bi-star{{ $i <= floor($averageRating) ? '-fill text-warning' : '' }}"></i>
+                                            @endfor
+                                        @else
+                                            @for ($i = 1; $i <= 5; $i++)
+                                                <i class="bi bi-star text-warning"></i>
+                                            @endfor
+                                        @endif
+                                        <span> ({{ $comments->count() }} Ulasan)</span>
+                                    </div>
                                 </div>
-                                <div class="text-start mt-2 fw-semibold">
+                                {{-- <div class="text-start mt-2 fw-semibold">
                                     <h6 class="m-0">Similarity: <span class="fw-bold text-danger">{{ $item->similarity }}</span></h6>
                                 <h6>Persentase Kemiripan: <span class="fw-bold text-danger">{{ number_format($item->similarity_percentage, 2) }}%</span></h6>
-                                </div>
+                                </div> --}}
                             </div>
                         </div>
 
@@ -197,29 +198,70 @@
 
             <div class="col-md-12 mt-5">
                 <div class="row">
-                    <div class="col-md-4 ">
-                        <h5 class="fw-bold mt-4 text-center my-4">
-                            <i class="bi bi-shop me-2"></i>Restoran Terdekat
+                    <!-- Area Terdekat -->
+                    <div class="col-md-6">
+                        <h5 class="fw-bold mt-4 text-center">
+                            <i class="bi bi-geo-alt me-2"></i>Area Terdekat
                         </h5>
-                        <ul id="restaurant-list" class="list-group">
-                        </ul>
+                        <div id="nearby-places"></div>
                     </div>
-                    <div class="col-md-4 ">
-                        <h5 class="fw-bold mt-4 text-center my-4">
-                            <i class="bi bi-credit-card me-2"></i>ATM Terdekat
+            
+                    <!-- Area Wisata Terdekat -->
+                    {{-- <div class="col-md-4">
+                        <h5 class="fw-bold mt-4 text-center">
+                            <i class="bi bi-map me-2"></i>Area Wisata Terdekat
                         </h5>
-                        <ul id="atm-list" class="list-group">
-                        </ul>
-                    </div>
-                    <div class="col-md-4 ">
-                        <h5 class="fw-bold mt-4 text-center my-4">
-                            <i class="bi bi-building me-2"></i>Hotel Terdekat
+                        <div id="tourist-spots"></div>
+                    </div> --}}
+            
+                    <!-- Sewa Motor Terdekat -->
+                    <div class="col-md-6">
+                        <h5 class="fw-bold mt-4 text-center">
+                            <i class="bi bi-bicycle me-2"></i>Sewa Kendaraan Terdekat
                         </h5>
-                        <ul id="hotel-list" class="list-group">
-                        </ul>
+                        <div id="motorcycle-rental">
+                            @if($sewaMotors && $sewaMotors->isEmpty())
+                                <p class="text-center">Tidak ada data sewa motor untuk wisata ini.</p>
+                            @elseif($sewaMotors)
+                                <ul class="list-group">
+                                    @foreach($sewaMotors as $sewaMotor)
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            <span>
+                                                <a href="#" data-bs-toggle="modal" data-bs-target="#sewaMotorModal{{ $sewaMotor->id }}">
+                                                    {{ $sewaMotor->nama }}
+                                                </a>
+                                            </span>
+                                            <a href="{{ $sewaMotor->lokasi }}" target="_blank" class="btn btn-link">
+                                                <i class="bi bi-geo-alt"></i> Lokasi
+                                            </a>
+                                        </li>
+                    
+                                        <!-- Modal untuk Deskripsi -->
+                                        <div class="modal fade" id="sewaMotorModal{{ $sewaMotor->id }}" tabindex="-1" aria-labelledby="sewaMotorModalLabel{{ $sewaMotor->id }}" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="sewaMotorModalLabel{{ $sewaMotor->id }}">Deskripsi - {{ $sewaMotor->nama }}</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <p>{{ $sewaMotor->deskripsi }}</p>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </ul>
+                            @endif
+                        </div>
                     </div>
+                    
                 </div>
             </div>
+            
 
         </div>
 
@@ -374,106 +416,88 @@
 @section('script')
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            // Ambil data latitude dan longitude dari data yang diteruskan ke view
-            var latitude = @json($wisata->latitude);
-            var longitude = @json($wisata->longitude);
-            var map = L.map('map').setView([latitude, longitude], 14);
+    var latitude = @json($wisata->latitude);
+    var longitude = @json($wisata->longitude);
+    var map = L.map('map').setView([latitude, longitude], 14);
 
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                maxZoom: 19,
-            }).addTo(map);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+    }).addTo(map);
 
-            var marker = L.marker([latitude, longitude]).addTo(map)
-                .bindPopup('{{ $wisata->nama }}')
-                .openPopup();
+    var marker = L.marker([latitude, longitude]).addTo(map)
+        .bindPopup('{{ $wisata->nama }}')
+        .openPopup();
 
-            // Query Overpass API untuk restoran terdekat, ATM, dan hotel
-            function addNearbyPlaces(url, listId, type) {
-                fetch(url)
-                    .then(response => response.json())
-                    .then(data => {
-                        var list = document.getElementById(listId);
-                        var elements = data.elements;
-
-                        // Batasi hingga 5 elemen
-                        var limitedElements = elements.slice(0, 5);
-
-                        limitedElements.forEach(element => {
-                            var latlng = [element.lat, element.lon];
-                            var placeMarker = L.marker(latlng).addTo(map);
-
-                            var name = element.tags.name || type;
-                            var distance = map.distance(marker.getLatLng(), latlng);
-
-                            placeMarker.bindPopup(name);
-
-                            // Format jarak
-                            var distanceText = distance >= 1000 ? (distance / 1000).toFixed(2) + ' km' :
-                                distance.toFixed(2) + ' meter';
-
-                            // Buat tautan Google Maps
-                            var googleMapsLink =
-                                `https://www.google.com/maps?q=${element.lat},${element.lon}`;
-
-                            // Tambahkan tempat ke daftar
-                            var listItem = document.createElement('li');
-                            listItem.className = 'list-group-item';
-                            listItem.innerHTML =
-                                ` <a href="${googleMapsLink}" class="text-decoration-none text-dark" target="_blank">${name}</a> - ${distanceText} `;
-                            list.appendChild(listItem);
-                        });
-                    })
-                    .catch(err => console.error(err));
-            }
-
-            addNearbyPlaces(
-                'https://overpass-api.de/api/interpreter?data=[out:json];node[amenity=restaurant](around:5000, ' +
-                latitude + ', ' + longitude + ');out;', 'restaurant-list', 'Restaurant');
-            addNearbyPlaces(
-                'https://overpass-api.de/api/interpreter?data=[out:json];node[amenity=atm](around:5000, ' +
-                latitude + ', ' + longitude + ');out;', 'atm-list', 'ATM');
-            addNearbyPlaces(
-                'https://overpass-api.de/api/interpreter?data=[out:json];node[tourism=hotel](around:5000, ' +
-                latitude + ', ' + longitude + ');out;', 'hotel-list', 'Hotel');
-        });
-    </script>
-
-    <script>
-        $(document).ready(function() {
-            // Function to filter comments based on the search input
-            $('#searchInput').on('input', function() {
-                let searchValue = $(this).val().toLowerCase();
-                $('#commentSection .comment').each(function() {
-                    let commentText = $(this).find('p').text().toLowerCase();
-                    $(this).toggle(commentText.includes(searchValue));
+    // Function to query Overpass API and display nearby places (limit to 5 total)
+    function addNearbyPlaces(url, type) {
+        return fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                return data.elements.map(element => {
+                    return {
+                        name: element.tags.name || type,
+                        lat: element.lat,
+                        lon: element.lon
+                    };
                 });
-            });
+            })
+            .catch(err => console.error(err));
+    }
 
-            // Function to filter comments based on selected filter
-            $('#filterOptions .filter-btn').on('click', function() {
-                let filter = $(this).data('filter');
-                $('#commentSection .comment').each(function() {
-                    let show = true;
+    // Get data for all place types and merge them
+    Promise.all([
+        addNearbyPlaces('https://overpass-api.de/api/interpreter?data=[out:json];node[amenity=restaurant](around:5000, ' + latitude + ', ' + longitude + ');out;', 'Restaurant'),
+        addNearbyPlaces('https://overpass-api.de/api/interpreter?data=[out:json];node[amenity=atm](around:5000, ' + latitude + ', ' + longitude + ');out;', 'ATM'),
+        addNearbyPlaces('https://overpass-api.de/api/interpreter?data=[out:json];node[tourism=hotel](around:5000, ' + latitude + ', ' + longitude + ');out;', 'Hotel'),
+        addNearbyPlaces('https://overpass-api.de/api/interpreter?data=[out:json];node[amenity=bicycle_rental](around:5000, ' + latitude + ', ' + longitude + ');out;', 'Motorcycle Rental')
+    ]).then(results => {
+        // Flatten the array and limit to 5 results
+        var allPlaces = [].concat(...results).slice(0, 5);
 
-                    if (filter.startsWith('rating-')) {
-                        let rating = filter.split('-')[1];
-                        let stars = $(this).find('.bi-star-fill').length;
-                        show = stars === parseInt(rating);
-                    } else if (filter === 'terbaru') {
-                        let dateA = new Date($(this).data('date'));
-                        let dateB = new Date($('#commentSection .comment').first().data('date'));
-                        show = dateB - dateA < 0;
-                    } else if (filter === 'terlama') {
-                        let dateA = new Date($(this).data('date'));
-                        let dateB = new Date($('#commentSection .comment').first().data('date'));
-                        show = dateA - dateB < 0;
-                    }
+        // Display the places in #nearby-places
+        var nearbyPlacesDiv = document.getElementById('nearby-places');
+        allPlaces.forEach(place => {
+            var distance = map.distance(marker.getLatLng(), [place.lat, place.lon]);
+            var distanceText = distance >= 1000 ? (distance / 1000).toFixed(2) + ' km' : distance.toFixed(2) + ' meter';
 
-                    $(this).toggle(show);
-                });
-            });
+            var googleMapsLink = `https://www.google.com/maps?q=${place.lat},${place.lon}`;
+
+            var placeDiv = document.createElement('p');
+            placeDiv.innerHTML = `<a href="${googleMapsLink}" class="text-decoration-none text-dark" target="_blank">${place.name}</a> - ${distanceText}`;
+
+            // Adding border inline
+            placeDiv.style.border = '1px solid #ddd';
+            placeDiv.style.padding = '10px';
+            placeDiv.style.marginBottom = '5px';
+            placeDiv.style.borderRadius = '5px';
+
+            nearbyPlacesDiv.appendChild(placeDiv);
+        });  
+
+        // Display the tourist spots in #tourist-spots (similarly)
+        var touristSpotsDiv = document.getElementById('tourist-spots');
+        allPlaces.forEach(place => {
+            var distance = map.distance(marker.getLatLng(), [place.lat, place.lon]);
+            var distanceText = distance >= 1000 ? (distance / 1000).toFixed(2) + ' km' : distance.toFixed(2) + ' meter';
+
+            var googleMapsLink = `https://www.google.com/maps?q=${place.lat},${place.lon}`;
+
+            var placeDiv = document.createElement('p');
+            placeDiv.innerHTML = `<a href="${googleMapsLink}" class="text-decoration-none text-dark" target="_blank">${place.name}</a> - ${distanceText}`;
+
+            // Adding border inline
+            placeDiv.style.border = '1px solid #ddd';
+            placeDiv.style.padding = '10px';
+            placeDiv.style.marginBottom = '5px';
+            placeDiv.style.borderRadius = '5px';
+
+            touristSpotsDiv.appendChild(placeDiv);
         });
+    });
+});
+
     </script>
 @endsection
