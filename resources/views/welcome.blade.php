@@ -101,7 +101,7 @@
             <div class="row justify-content-center">
                 <div class="col-md-12">
                     <h2 class="fw-bold text-dark mt-0 mb-3 mt-5">Top Rekomendasi</h2>
-                    <p class="text-small mb-3 ">Menampilkan destinasi wisata terbaik berdasarkan rating, popularitas, atau kategori tertentu, sehingga memudahkan pengguna menemukan tempat wisata unggulan di Gunung Kidul.</p>
+                    {{-- <p class="text-small mb-3 ">Menampilkan destinasi wisata terbaik berdasarkan rating, popularitas, atau kategori tertentu, sehingga memudahkan pengguna menemukan tempat wisata unggulan di Gunung Kidul.</p> --}}
                         <div class="d-flex gap-2 mt-3 ">
                             @foreach ($kategori as $item)
                                 <a href="{{ route('wisata.filter', $item->id) }}" class="btn btn-outline-dark rounded-5 text-sm">

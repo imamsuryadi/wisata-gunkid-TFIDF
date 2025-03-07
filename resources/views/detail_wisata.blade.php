@@ -160,10 +160,10 @@
                                         <span> ({{ $comments->count() }} Ulasan)</span>
                                     </div>
                                 </div>
-                                {{-- <div class="text-start mt-2 fw-semibold">
+                                <div class="text-start mt-2 fw-semibold">
                                     <h6 class="m-0">Similarity: <span class="fw-bold text-danger">{{ $item->similarity }}</span></h6>
                                 <h6>Persentase Kemiripan: <span class="fw-bold text-danger">{{ number_format($item->similarity_percentage, 2) }}%</span></h6>
-                                </div> --}}
+                                </div>
                             </div>
                         </div>
 
